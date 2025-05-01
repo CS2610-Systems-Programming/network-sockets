@@ -84,8 +84,9 @@ void broadcast_message(char *message, int sender_socket) {
 void save_to_history(char *message) {
     pthread_mutex_lock(&file_mutex);
     fprintf(chat_history, "%s", message);
-    fflush(chat_history);
-    pthread_mutex_unlock(&file_mutex);
+    fflush(chat_history); //force immediate write
+    fsync(fileno(chat_history)); //ensure physical write to disk
+    pthread_mutex_unlock(&file_mutex); 
 }
 
 // Handle communication with a client
