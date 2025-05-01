@@ -21,9 +21,9 @@ int main()
 	int fileDescriptor = socket(AF_INET, SOCK_STREAM, 0);
 	if(fileDescriptor < 0)
 	{
-		report("socket", 1); //need to check if we have function named "report" or not. 
-	}
-
+		report("Socket Issue", 1); //need to check if we have function named "report" or not. 
+	}	
+		
 	//bind(): tells the O.S. to listen for incoming connections on THIS machine's IP and port.
 	//Binding in memory = The server program is assigning itself a local network address (IP) and prot to listen 
 	//Set the local address and port in memory by filling a struct "sockaddr_in"
@@ -48,7 +48,20 @@ int main()
 	socketAddress.sin_addr.s_addr = htonl(INADDR_ANY);
 	
 	//
-	socketAddress.sin_port = htons(PortNumber)
+	socketAddress.sin_port = htons(PortNumber);
 			
+	//BINDING
+	//fileDescriptor: the integer representing my socket
+	//(struct sockaddr *) &socketAddress: I created a pointer to my socketAddress structure, and 
+	//cast that into sockaddr* type
+	//Tell the O.S. to attach the socket (identified by fileDescriptor) to the address and port specified in
+	//socketAddress structure. 
+	if(bind(fileDescriptor, (struct sockaddr *) &socketAddress, sizeof(socketAddress)) < 0)
+	{
+		report("Binding Issue", 1);
+	}
 	
-}
+	//LISTENING
+	//Listen for socket connections and limit the queue of incoming connections
+}	
+
