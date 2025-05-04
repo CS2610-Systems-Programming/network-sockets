@@ -2,7 +2,7 @@
 #include <sys/socket.h>
 #define PortNumber	1234
 #define MaxConnects	8
-#define BuffSize	256
+#define BuffSize	2048
 #define ConversationLen	3
 #define Host		"localhost"
 
@@ -63,5 +63,37 @@ int main()
 	
 	//LISTENING
 	//Listen for socket connections and limit the queue of incoming connections
+	//socket - file descriptor
+	//MaxConnects - limits the number of outstanding connections to a socket's listening queue
+	if(listen(fileDescriptor, MaxConnects) < 0)
+	{
+		report("Listening Issue", 1);
+	}
+	
+	//Print formatted output to standard error stream to debug info.
+	fprintf(stderr, "Listening on port %f for clients. \n", PortNumber);
+
+	
+
+	//ACCEPT
+	//Accept a new connection to the socket
+	//Function signature: 
+	//int accept(int socket, struct sockaddr *address, socketlen_t *address_len);
+	
+	//infinite loop - always waiting for new client connections
+	while(1)
+	{
+		//This structure holds the client's address information
+		struct  sockaddr_in clientAddress;
+		int len = sizeof(clientAddress);
+		//This line waits for a new client to connect to the server. 
+		//It talkes the main (server) socket (fileDescriptor) that is listening and fills in clientAddress with the client's info. It returns a new socket (file descriptor) to communicate with that specific client. 
+		int clientFileDescriptor = accept(fileDescriptor, (struct sockaddr*) &clientAddress, &len);
+		if(clientFileDescriptor < 0)
+		{
+			report("Accept Issue", 0); /* Don't terminate, though there is a problem*/
+		}
+		continue;
+		
 }	
 
